@@ -1,0 +1,1195 @@
+/* ==========================================================
+   JAGUAR CORP
+   Sistema de Facturación de Clientes
+   ========================================================== */
+
+
+/* ==========================================================
+   1. VARIABLES GLOBALES
+   ========================================================== */
+
+   :root {
+    --jc-primary: #0066ff;
+    --jc-primary-dark: #004dcc;
+    --jc-primary-light: #eaf2ff;
+
+    --jc-sidebar: #0b1729;
+    --jc-sidebar-hover: #172b4d;
+
+    --jc-background: #f4f7fc;
+    --jc-white: #ffffff;
+
+    --jc-text: #172b4d;
+    --jc-text-secondary: #64748b;
+
+    --jc-border: #e8edf5;
+
+    --jc-success: #198754;
+    --jc-warning: #f59e0b;
+    --jc-danger: #dc3545;
+
+    --jc-sidebar-width: 260px;
+    --jc-topbar-height: 76px;
+
+    --jc-radius: 14px;
+    --jc-shadow: 0 4px 15px rgba(15, 35, 65, 0.05);
+
+    --jc-transition: 0.25s ease;
+}
+
+
+/* ==========================================================
+   2. ESTILOS GENERALES
+   ========================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--jc-background);
+    color: var(--jc-text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+a {
+    transition:
+        color var(--jc-transition),
+        background-color var(--jc-transition),
+        border-color var(--jc-transition);
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+::selection {
+    background: var(--jc-primary);
+    color: var(--jc-white);
+}
+
+
+/* ==========================================================
+   3. MENÚ LATERAL
+   ========================================================== */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: var(--jc-sidebar-width);
+    height: 100vh;
+    height: 100dvh;
+
+    display: flex;
+    flex-direction: column;
+
+    background: var(--jc-sidebar);
+    color: var(--jc-white);
+
+    z-index: 1050;
+
+    overflow-y: auto;
+
+    transition: transform 0.3s ease;
+}
+
+/* Marca */
+
+.sidebar-brand {
+    padding: 32px 22px 28px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.brand-icon {
+    width: 65px;
+    height: 65px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 16px;
+
+    border-radius: 18px;
+
+    background: linear-gradient(
+        135deg,
+        #0066ff,
+        #00a3ff
+    );
+
+    color: #ffffff;
+    font-size: 2rem;
+
+    box-shadow: 0 8px 22px rgba(0, 102, 255, 0.25);
+}
+
+.sidebar-brand h4 {
+    margin-bottom: 4px;
+    color: #ffffff;
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.sidebar-brand p {
+    margin-bottom: 0;
+    color: #94a3b8;
+    font-size: 0.8rem;
+}
+
+/* Navegación */
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    padding: 28px 14px;
+}
+
+.sidebar-nav .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    padding: 14px 16px;
+
+    border-radius: 10px;
+
+    color: #a9b8ce;
+
+    font-size: 0.94rem;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition: all var(--jc-transition);
+}
+
+.sidebar-nav .nav-link i {
+    font-size: 1.2rem;
+    width: 24px;
+    text-align: center;
+}
+
+.sidebar-nav .nav-link:hover {
+    background: var(--jc-sidebar-hover);
+    color: #ffffff;
+    transform: translateX(3px);
+}
+
+.sidebar-nav .nav-link.active {
+    background: linear-gradient(
+        90deg,
+        var(--jc-primary),
+        #0054d9
+    );
+
+    color: #ffffff;
+
+    box-shadow: 0 5px 15px rgba(0, 102, 255, 0.2);
+}
+
+/* Pie del menú */
+
+.sidebar-footer {
+    margin-top: auto;
+    padding: 22px;
+    text-align: center;
+    color: #94a3b8;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-footer small {
+    font-size: 0.75rem;
+}
+
+
+/* ==========================================================
+   4. ESTRUCTURA PRINCIPAL
+   ========================================================== */
+
+.main-wrapper {
+    display: flex;
+    flex-direction: column;
+
+    min-height: 100vh;
+
+    margin-left: var(--jc-sidebar-width);
+
+    transition: margin-left var(--jc-transition);
+}
+
+.content {
+    flex: 1;
+    width: 100%;
+    max-width: 1600px;
+
+    margin: 0 auto;
+    padding: 32px;
+}
+
+
+/* ==========================================================
+   5. BARRA SUPERIOR
+   ========================================================== */
+
+.topbar {
+    height: var(--jc-topbar-height);
+    min-height: var(--jc-topbar-height);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 32px;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid var(--jc-border);
+
+    box-shadow: 0 2px 10px rgba(15, 35, 65, 0.02);
+}
+
+.btn-menu {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: 10px;
+
+    background: var(--jc-primary-light);
+    color: var(--jc-primary);
+
+    font-size: 1.5rem;
+
+    transition: all var(--jc-transition);
+}
+
+.btn-menu:hover {
+    background: var(--jc-primary);
+    color: #ffffff;
+}
+
+.topbar-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    color: var(--jc-text);
+}
+
+.topbar-user strong {
+    font-size: 0.9rem;
+}
+
+.topbar-user small {
+    font-size: 0.75rem;
+}
+
+.topbar-user > i {
+    color: var(--jc-primary);
+}
+
+
+/* ==========================================================
+   6. ENCABEZADOS
+   ========================================================== */
+
+.page-header h1 {
+    margin: 0;
+    color: var(--jc-text);
+    font-size: 1.8rem;
+    font-weight: 800;
+}
+
+.page-header p {
+    font-size: 0.95rem;
+}
+
+
+/* ==========================================================
+   7. BOTONES GENERALES
+   ========================================================== */
+
+.btn {
+    border-radius: 9px;
+    font-weight: 600;
+
+    transition:
+        background-color var(--jc-transition),
+        border-color var(--jc-transition),
+        color var(--jc-transition),
+        transform var(--jc-transition),
+        box-shadow var(--jc-transition);
+}
+
+.btn-primary {
+    background: var(--jc-primary);
+    border-color: var(--jc-primary);
+}
+
+.btn-primary:hover {
+    background: var(--jc-primary-dark);
+    border-color: var(--jc-primary-dark);
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 6px 15px rgba(0, 102, 255, 0.2);
+}
+
+.btn-success:hover,
+.btn-outline-primary:hover,
+.btn-outline-danger:hover {
+    transform: translateY(-2px);
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn:focus-visible,
+.btn-menu:focus-visible,
+.sidebar-nav .nav-link:focus-visible {
+    outline: 3px solid #ffcc33;
+    outline-offset: 3px;
+}
+
+
+/* ==========================================================
+   8. DASHBOARD - ENCABEZADO PRINCIPAL
+   ========================================================== */
+
+.dashboard-hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    min-height: 210px;
+
+    padding: 35px;
+
+    margin-bottom: 28px;
+
+    overflow: hidden;
+
+    border-radius: 18px;
+
+    background: linear-gradient(
+        120deg,
+        #0b1729,
+        #123f83,
+        #0066ff
+    );
+
+    color: #ffffff;
+}
+
+.dashboard-hero::after {
+    content: "";
+
+    position: absolute;
+    right: -70px;
+    top: -100px;
+
+    width: 300px;
+    height: 300px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-content h1,
+.dashboard-hero h1 {
+    color: #ffffff;
+    font-weight: 800;
+}
+
+.hero-content p {
+    color: #dbeafe;
+}
+
+.hero-welcome {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 14px;
+
+    padding: 6px 13px;
+
+    border-radius: 20px;
+
+    background: rgba(255, 255, 255, 0.12);
+
+    color: #ffffff;
+
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+
+/* ==========================================================
+   9. DASHBOARD - ESTADÍSTICAS
+   ========================================================== */
+
+.stat-card {
+    position: relative;
+
+    height: 100%;
+    min-height: 150px;
+
+    padding: 24px;
+
+    border: 1px solid var(--jc-border);
+    border-radius: var(--jc-radius);
+
+    background: #ffffff;
+
+    box-shadow: var(--jc-shadow);
+
+    transition:
+        transform var(--jc-transition),
+        box-shadow var(--jc-transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 28px rgba(15, 35, 65, 0.1);
+}
+
+.stat-card h2,
+.stat-card h3 {
+    color: var(--jc-text);
+    font-weight: 800;
+}
+
+.stat-card p {
+    color: var(--jc-text-secondary);
+}
+
+.stat-icon {
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    font-size: 1.5rem;
+}
+
+
+/* ==========================================================
+   10. DASHBOARD - ACCIONES RÁPIDAS
+   ========================================================== */
+
+.action-card {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+
+    height: 100%;
+
+    padding: 24px;
+
+    border: 1px solid var(--jc-border);
+    border-radius: var(--jc-radius);
+
+    background: #ffffff;
+
+    color: var(--jc-text);
+
+    text-decoration: none;
+
+    box-shadow: var(--jc-shadow);
+
+    transition: all var(--jc-transition);
+}
+
+.action-card:hover {
+    color: var(--jc-text);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(15, 35, 65, 0.1);
+}
+
+.action-card i {
+    font-size: 1.7rem;
+}
+
+.action-card h3,
+.action-card h4,
+.action-card h5 {
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+.action-card p {
+    margin-bottom: 0;
+    color: var(--jc-text-secondary);
+}
+
+.action-blue {
+    border-left: 4px solid #0066ff;
+}
+
+.action-green {
+    border-left: 4px solid #198754;
+}
+
+.action-purple {
+    border-left: 4px solid #7c3aed;
+}
+
+
+/* ==========================================================
+   11. TARJETAS GENERALES
+   ========================================================== */
+
+.form-card,
+.filter-card,
+.invoice-card,
+.detail-card {
+    background: #ffffff;
+
+    border: 1px solid var(--jc-border);
+    border-radius: var(--jc-radius);
+
+    box-shadow: var(--jc-shadow);
+}
+
+.form-card,
+.invoice-card,
+.detail-card {
+    overflow: hidden;
+}
+
+.form-card-header,
+.invoice-card-header,
+.detail-card-header {
+    padding: 22px 24px;
+    border-bottom: 1px solid #edf1f7;
+    background: #ffffff;
+}
+
+.form-card-body,
+.detail-card-body {
+    padding: 24px;
+}
+
+.filter-card {
+    padding: 25px;
+}
+
+.invoice-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+
+/* ==========================================================
+   12. FORMULARIOS
+   ========================================================== */
+
+.form-label {
+    color: #334155;
+    font-size: 0.9rem;
+}
+
+.form-control,
+.form-select {
+    min-height: 44px;
+
+    border-color: #dce4ef;
+    border-radius: 8px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--jc-primary);
+
+    box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.12);
+}
+
+.input-group-text {
+    background: #f5f8fd;
+    border-color: #dce4ef;
+    color: #64748b;
+}
+
+.form-card .form-control,
+.form-card .form-select {
+    min-height: 46px;
+}
+
+.form-card .btn {
+    min-height: 44px;
+}
+
+.form-step-number {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: var(--jc-primary-light);
+    color: var(--jc-primary);
+
+    font-weight: 800;
+}
+
+
+/* ==========================================================
+   13. TABLA DE FACTURAS
+   ========================================================== */
+
+.invoice-table {
+    width: 100%;
+}
+
+.invoice-table thead th {
+    padding: 17px 20px;
+
+    background: #f5f8fd;
+    color: #526581;
+
+    font-size: 0.83rem;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+.invoice-table tbody td {
+    padding: 18px 20px;
+
+    color: #334155;
+
+    border-bottom: 1px solid #edf1f7;
+}
+
+.invoice-table tbody tr {
+    transition: background-color var(--jc-transition);
+}
+
+.invoice-table tbody tr:hover td {
+    background: #f8fbff;
+}
+
+.invoice-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.invoice-number {
+    color: var(--jc-primary);
+    font-weight: 700;
+}
+
+.invoice-client {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.client-avatar {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: var(--jc-primary-light);
+    color: var(--jc-primary);
+}
+
+.invoice-amount {
+    color: var(--jc-text);
+    white-space: nowrap;
+}
+
+.invoice-table .btn {
+    width: 34px;
+    height: 34px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+}
+
+
+/* ==========================================================
+   14. ESTADOS DE PAGO
+   ========================================================== */
+
+.badge-status {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 7px 12px;
+
+    border-radius: 20px;
+
+    font-size: 0.8rem;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+.badge-paid {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.badge-pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+
+/* ==========================================================
+   15. LISTADO VACÍO
+   ========================================================== */
+
+.empty-state {
+    padding: 65px 20px;
+}
+
+.empty-icon {
+    width: 85px;
+    height: 85px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 20px;
+
+    border-radius: 50%;
+
+    background: #edf4ff;
+    color: var(--jc-primary);
+
+    font-size: 2.5rem;
+}
+
+
+/* ==========================================================
+   16. DETALLE DE FACTURA
+   ========================================================== */
+
+.detail-label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: var(--jc-text-secondary);
+
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.detail-value {
+    margin-bottom: 0;
+
+    color: var(--jc-text);
+
+    font-size: 1rem;
+    font-weight: 700;
+
+    overflow-wrap: anywhere;
+}
+
+.invoice-total-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    gap: 20px;
+
+    padding: 24px;
+
+    border-radius: 12px;
+
+    background: #eef5ff;
+}
+
+.invoice-total-box span {
+    display: block;
+
+    color: var(--jc-text);
+
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.invoice-total-box p {
+    margin-top: 5px;
+
+    color: var(--jc-text-secondary);
+    font-size: 0.82rem;
+}
+
+.invoice-total-box h2 {
+    margin: 0;
+
+    color: var(--jc-primary);
+
+    font-size: 2rem;
+    font-weight: 800;
+}
+
+
+/* ==========================================================
+   17. RESUMEN GENERADO POR PYTHON
+   ========================================================== */
+
+.invoice-python-output {
+    padding: 24px;
+
+    border-radius: 12px;
+
+    background: #0b1729;
+    color: #d8e8ff;
+
+    font-family: "Courier New", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    overflow-x: auto;
+}
+
+
+/* ==========================================================
+   18. HISTORIAL DE OPERACIONES
+   ========================================================== */
+
+.invoice-history {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.history-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.history-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: var(--jc-primary-light);
+    color: var(--jc-primary);
+
+    font-size: 1.1rem;
+}
+
+.history-content {
+    flex: 1;
+    min-width: 0;
+    padding-top: 3px;
+}
+
+.history-content strong {
+    color: var(--jc-text);
+}
+
+
+/* ==========================================================
+   19. PIE DE PÁGINA
+   ========================================================== */
+
+.main-footer {
+    padding: 20px 32px;
+
+    background: #ffffff;
+    color: var(--jc-text-secondary);
+
+    border-top: 1px solid var(--jc-border);
+
+    font-size: 0.85rem;
+}
+
+
+/* ==========================================================
+   20. ACCESIBILIDAD
+   ========================================================== */
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+    outline: 3px solid #ffcc33;
+    outline-offset: 3px;
+}
+
+.text-muted {
+    color: #64748b !important;
+}
+
+
+/* ==========================================================
+   21. RESPONSIVE - TABLETS
+   ========================================================== */
+
+@media (max-width: 991px) {
+
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.show {
+        transform: translateX(0);
+    }
+
+    .main-wrapper {
+        margin-left: 0;
+    }
+
+    .content {
+        padding: 25px;
+    }
+
+    .topbar {
+        padding: 0 25px;
+    }
+
+}
+
+
+/* ==========================================================
+   22. RESPONSIVE - CELULARES
+   ========================================================== */
+
+@media (max-width: 768px) {
+
+    .content {
+        padding: 18px;
+    }
+
+    .topbar {
+        height: 65px;
+        min-height: 65px;
+        padding: 0 18px;
+    }
+
+    .page-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .dashboard-hero {
+        min-height: 190px;
+        padding: 25px;
+    }
+
+    .dashboard-hero h1 {
+        font-size: 1.6rem;
+    }
+
+    .stat-card {
+        min-height: 135px;
+        padding: 20px;
+    }
+
+    .action-card {
+        padding: 20px;
+    }
+
+    .form-card-header,
+    .invoice-card-header,
+    .detail-card-header {
+        padding: 18px;
+    }
+
+    .form-card-body,
+    .detail-card-body {
+        padding: 20px;
+    }
+
+    .filter-card {
+        padding: 18px;
+    }
+
+    .invoice-table {
+        min-width: 720px;
+    }
+
+    .invoice-total-box {
+        padding: 18px;
+    }
+
+    .invoice-total-box h2 {
+        font-size: 1.7rem;
+    }
+
+    .invoice-python-output {
+        padding: 16px;
+        font-size: 0.75rem;
+    }
+
+    .empty-state {
+        padding: 45px 15px;
+    }
+
+    .form-card .btn {
+        width: 100%;
+    }
+
+    .main-footer {
+        padding: 18px;
+        text-align: center;
+    }
+
+    .main-footer > div {
+        justify-content: center !important;
+    }
+
+}
+
+
+/* ==========================================================
+   23. PANTALLAS MUY PEQUEÑAS
+   ========================================================== */
+
+@media (max-width: 480px) {
+
+    .sidebar {
+        width: min(280px, 85vw);
+    }
+
+    .dashboard-hero {
+        padding: 20px;
+    }
+
+    .dashboard-hero h1 {
+        font-size: 1.4rem;
+    }
+
+    .stat-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 1.2rem;
+    }
+
+    .invoice-total-box h2 {
+        font-size: 1.5rem;
+    }
+
+}
+
+
+/* ==========================================================
+   24. REDUCCIÓN DE MOVIMIENTO
+   ========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+}
+
+
+/* ==========================================================
+   25. IMPRESIÓN
+   ========================================================== */
+
+@media print {
+
+    body {
+        background: #ffffff;
+        color: #000000;
+    }
+
+    .sidebar,
+    .topbar,
+    .main-footer,
+    .btn,
+    form {
+        display: none !important;
+    }
+
+    .main-wrapper {
+        margin-left: 0 !important;
+    }
+
+    .content {
+        padding: 0;
+        max-width: 100%;
+    }
+
+    .detail-card {
+        box-shadow: none;
+        border: 1px solid #dddddd;
+        break-inside: avoid;
+    }
+
+    .invoice-total-box {
+        background: #ffffff;
+        border: 1px solid #dddddd;
+    }
+
+}

@@ -1,0 +1,449 @@
+{% extends "base.html" %}
+
+{% block title %}
+Nueva Factura | Jaguar Corp
+{% endblock %}
+
+{% block content %}
+
+<!-- ==========================================
+     ENCABEZADO
+========================================== -->
+
+<section class="page-header mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+
+        <div>
+            <h1 class="fw-bold mb-2">
+                <i class="bi bi-file-earmark-plus text-primary me-2"></i>
+                Crear Nueva Factura
+            </h1>
+
+            <p class="text-muted mb-0">
+                Completa los datos para registrar una factura en Jaguar Corp.
+            </p>
+        </div>
+
+        <a
+            href="{{ url_for('facturas') }}"
+            class="btn btn-outline-secondary"
+        >
+            <i class="bi bi-arrow-left me-2"></i>
+            Ver facturas
+        </a>
+
+    </div>
+</section>
+
+
+<!-- ==========================================
+     FORMULARIO PRINCIPAL
+========================================== -->
+
+<div class="row g-4">
+
+    <div class="col-lg-8">
+
+        <section class="form-card">
+
+            <div class="form-card-header">
+                <h2 class="fs-5 fw-bold mb-0">
+                    <i class="bi bi-file-earmark-text text-primary me-2"></i>
+                    Información de la factura
+                </h2>
+            </div>
+
+            <div class="form-card-body">
+
+                <form
+                    id="formFactura"
+                    action="{{ url_for('nueva_factura') }}"
+                    method="POST"
+                >
+
+                    <div class="row g-4">
+
+                        <!-- NOMBRE DEL CLIENTE -->
+
+                        <div class="col-12">
+
+                            <label
+                                for="cliente"
+                                class="form-label fw-semibold"
+                            >
+                                Nombre del cliente
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <div class="input-group">
+
+                                <span class="input-group-text">
+                                    <i class="bi bi-person"></i>
+                                </span>
+
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="cliente"
+                                    name="cliente"
+                                    placeholder="Ejemplo: Empresa Tecnológica"
+                                    maxlength="100"
+                                    autocomplete="organization"
+                                    required
+                                >
+
+                            </div>
+
+                            <small class="text-muted">
+                                Ingresa el nombre del cliente o empresa.
+                            </small>
+
+                        </div>
+
+
+                        <!-- NÚMERO DE FACTURA AUTOMÁTICO -->
+
+                        <div class="col-md-6">
+
+                            <label
+                                for="numero_factura"
+                                class="form-label fw-semibold"
+                            >
+                                Número de factura
+                            </label>
+
+                            <div class="input-group">
+
+                                <span class="input-group-text">
+                                    <i class="bi bi-hash"></i>
+                                </span>
+
+                                <input
+                                    type="text"
+                                    class="form-control bg-light fw-bold"
+                                    id="numero_factura"
+                                    value="{{ siguiente_numero }}"
+                                    readonly
+                                    aria-describedby="ayuda-numero"
+                                >
+
+                                <span
+                                    class="input-group-text"
+                                    title="Generado automáticamente"
+                                >
+                                    <i class="bi bi-lock-fill text-success"></i>
+                                </span>
+
+                            </div>
+
+                            <small
+                                id="ayuda-numero"
+                                class="text-muted"
+                            >
+                                Número asignado automáticamente por el sistema.
+                            </small>
+
+                        </div>
+
+
+                        <!-- MONTO DE LA FACTURA -->
+
+                        <div class="col-md-6">
+
+                            <label
+                                for="monto"
+                                class="form-label fw-semibold"
+                            >
+                                Monto de la factura
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <div class="input-group">
+
+                                <span class="input-group-text">
+                                    $
+                                </span>
+
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="monto"
+                                    name="monto"
+                                    placeholder="Ejemplo: 850000"
+                                    min="0"
+                                    step="0.01"
+                                    required
+                                >
+
+                                <span class="input-group-text">
+                                    CLP
+                                </span>
+
+                            </div>
+
+                            <small class="text-muted">
+                                Ingresa el monto sin puntos de miles.
+                            </small>
+
+                        </div>
+
+
+                        <!-- FECHA DE EMISIÓN -->
+
+                        <div class="col-md-6">
+
+                            <label
+                                for="fecha"
+                                class="form-label fw-semibold"
+                            >
+                                Fecha de emisión
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <div class="input-group">
+
+                                <span class="input-group-text">
+                                    <i class="bi bi-calendar3"></i>
+                                </span>
+
+                                <input
+                                    type="date"
+                                    class="form-control"
+                                    id="fecha"
+                                    name="fecha"
+                                    required
+                                >
+
+                            </div>
+
+                            <small class="text-muted">
+                                Selecciona la fecha de emisión.
+                            </small>
+
+                        </div>
+
+
+                        <!-- ESTADO DEL PAGO -->
+
+                        <div class="col-md-6">
+
+                            <label
+                                for="estado_pago"
+                                class="form-label fw-semibold"
+                            >
+                                Estado del pago
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <div class="input-group">
+
+                                <span class="input-group-text">
+                                    <i class="bi bi-credit-card"></i>
+                                </span>
+
+                                <select
+                                    class="form-select"
+                                    id="estado_pago"
+                                    name="estado_pago"
+                                    required
+                                >
+                                    <option value="Pendiente" selected>
+                                        Pendiente
+                                    </option>
+
+                                    <option value="Pagado">
+                                        Pagado
+                                    </option>
+                                </select>
+
+                            </div>
+
+                            <small class="text-muted">
+                                Selecciona el estado inicial de la factura.
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- INFORMACIÓN IMPORTANTE -->
+
+                    <div class="alert alert-info border-0 mt-4 mb-4">
+
+                        <div class="d-flex align-items-start gap-3">
+
+                            <i class="bi bi-info-circle fs-4"></i>
+
+                            <div>
+                                <strong>
+                                    Información importante
+                                </strong>
+
+                                <p class="mb-0 mt-1">
+                                    El número de factura se genera automáticamente.
+                                    Los demás datos serán validados por Python
+                                    antes de registrar la factura.
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- BOTONES -->
+
+                    <div class="d-flex flex-wrap justify-content-end gap-3">
+
+                        <a
+                            href="{{ url_for('inicio') }}"
+                            class="btn btn-outline-secondary px-4"
+                        >
+                            <i class="bi bi-x-circle me-2"></i>
+                            Cancelar
+                        </a>
+
+                        <button
+                            type="reset"
+                            class="btn btn-outline-primary px-4"
+                        >
+                            <i class="bi bi-arrow-clockwise me-2"></i>
+                            Limpiar
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary px-4"
+                            id="btnGuardarFactura"
+                        >
+                            <i class="bi bi-check-circle me-2"></i>
+                            Guardar Factura
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <!-- ==========================================
+         PANEL LATERAL DE AYUDA
+    ========================================== -->
+
+    <div class="col-lg-4">
+
+        <section class="detail-card mb-4">
+
+            <div class="detail-card-header">
+
+                <h2 class="fs-5 fw-bold mb-0">
+                    <i class="bi bi-lightbulb text-primary me-2"></i>
+                    ¿Cómo registrar una factura?
+                </h2>
+
+            </div>
+
+            <div class="detail-card-body">
+
+                <!-- PASO 1 -->
+
+                <div class="d-flex gap-3 mb-4">
+
+                    <div class="form-step-number">
+                        1
+                    </div>
+
+                    <div>
+                        <strong>Identifica al cliente</strong>
+
+                        <p class="text-muted mb-0 mt-1">
+                            Escribe el nombre del cliente o empresa.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <!-- PASO 2 -->
+
+                <div class="d-flex gap-3 mb-4">
+
+                    <div class="form-step-number">
+                        2
+                    </div>
+
+                    <div>
+                        <strong>Ingresa los datos</strong>
+
+                        <p class="text-muted mb-0 mt-1">
+                            El número se genera automáticamente.
+                            Solo debes indicar el monto y la fecha.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <!-- PASO 3 -->
+
+                <div class="d-flex gap-3">
+
+                    <div class="form-step-number">
+                        3
+                    </div>
+
+                    <div>
+                        <strong>Guarda la factura</strong>
+
+                        <p class="text-muted mb-0 mt-1">
+                            Selecciona el estado de pago y presiona
+                            Guardar Factura.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- AVISO DEL PROTOTIPO -->
+
+        <div class="alert alert-warning border-0">
+
+            <i class="bi bi-exclamation-triangle me-2"></i>
+
+            <strong>Modo demostración</strong>
+
+            <p class="mb-0 mt-2">
+                Este sistema almacena las facturas temporalmente
+                en memoria. Los registros y la numeración se
+                reiniciarán cuando se reinicie el servidor.
+                osea no tenemos base de datos
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script
+
+    src="{{ url_for('static', filename='js/nueva_factura.js') }}">
+
+</script>
+
+{% endblock %}

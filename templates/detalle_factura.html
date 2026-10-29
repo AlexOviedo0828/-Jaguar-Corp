@@ -1,0 +1,518 @@
+{% extends "base.html" %}
+
+{% block title %}
+Factura #{{ factura.get_numero_factura() }} | Jaguar Corp
+{% endblock %}
+
+{% block content %}
+
+<!-- ==========================================
+     ENCABEZADO DE LA FACTURA
+========================================== -->
+
+<section class="page-header mb-4">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+
+        <div>
+
+            <a
+                href="{{ url_for('facturas') }}"
+                class="text-decoration-none text-muted d-inline-block mb-3"
+            >
+                <i class="bi bi-arrow-left me-2"></i>
+                Volver a facturas
+            </a>
+
+            <h1 class="fw-bold mb-2">
+
+                <i class="bi bi-receipt text-primary me-2"></i>
+
+                Factura #{{ factura.get_numero_factura() }}
+
+            </h1>
+
+            <p class="text-muted mb-0">
+                Información detallada y administración de la factura.
+            </p>
+
+        </div>
+
+        <!-- ESTADO ACTUAL -->
+
+        <div>
+
+            {% if factura.get_estado_pago() == "Pagado" %}
+
+                <span class="badge-status badge-paid">
+                    <i class="bi bi-check-circle me-2"></i>
+                    Pagado
+                </span>
+
+            {% else %}
+
+                <span class="badge-status badge-pending">
+                    <i class="bi bi-clock-history me-2"></i>
+                    Pendiente
+                </span>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ==========================================
+     INFORMACIÓN PRINCIPAL
+========================================== -->
+
+<div class="row g-4">
+
+    <!-- COLUMNA IZQUIERDA -->
+
+    <div class="col-lg-8">
+
+        <section class="detail-card mb-4">
+
+            <div class="detail-card-header">
+
+                <h2 class="fs-5 fw-bold mb-0">
+                    <i class="bi bi-file-earmark-text text-primary me-2"></i>
+                    Información de la factura
+                </h2>
+
+            </div>
+
+            <div class="detail-card-body">
+
+                <div class="row g-4">
+
+                    <!-- NÚMERO -->
+
+                    <div class="col-md-6">
+
+                        <span class="detail-label">
+                            Número de factura
+                        </span>
+
+                        <p class="detail-value">
+                            #{{ factura.get_numero_factura() }}
+                        </p>
+
+                    </div>
+
+
+                    <!-- CLIENTE -->
+
+                    <div class="col-md-6">
+
+                        <span class="detail-label">
+                            Nombre del cliente
+                        </span>
+
+                        <p class="detail-value">
+                            {{ factura.get_cliente() }}
+                        </p>
+
+                    </div>
+
+
+                    <!-- FECHA -->
+
+                    <div class="col-md-6">
+
+                        <span class="detail-label">
+                            Fecha de emisión
+                        </span>
+
+                        <p class="detail-value">
+                            <i class="bi bi-calendar3 text-primary me-2"></i>
+                            {{ factura.get_fecha() }}
+                        </p>
+
+                    </div>
+
+
+                    <!-- ESTADO -->
+
+                    <div class="col-md-6">
+
+                        <span class="detail-label">
+                            Estado del pago
+                        </span>
+
+                        <p class="detail-value">
+                            {{ factura.get_estado_pago() }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <hr class="my-4">
+
+                <!-- MONTO TOTAL -->
+
+                <div class="invoice-total-box">
+
+                    <div>
+
+                        <span>
+                            Monto actual de la factura
+                        </span>
+
+                        <p class="mb-0">
+                            Valor registrado después de descuentos
+                        </p>
+
+                    </div>
+
+                    <h2>
+                        ${{ "{:,.0f}".format(
+                            factura.get_monto()
+                        ).replace(",", ".") }}
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             RESUMEN GENERADO POR PYTHON
+        ========================================== -->
+
+        <section class="detail-card mb-4">
+
+            <div class="detail-card-header">
+
+                <h2 class="fs-5 fw-bold mb-0">
+                    <i class="bi bi-terminal text-primary me-2"></i>
+                    Resumen generado por Python
+                </h2>
+
+            </div>
+
+            <div class="detail-card-body">
+
+                <p class="text-muted">
+                    Esta información se genera utilizando
+                    el método <code>mostrar_factura()</code>
+                    de nuestra clase <code>Factura_Cliente</code>.
+                </p>
+
+                <pre class="invoice-python-output">{{ factura.mostrar_factura() }}</pre>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             HISTORIAL DE OPERACIONES
+        ========================================== -->
+
+        <section class="detail-card">
+
+            <div class="detail-card-header">
+
+                <h2 class="fs-5 fw-bold mb-0">
+                    <i class="bi bi-clock-history text-primary me-2"></i>
+                    Historial de operaciones
+                </h2>
+
+            </div>
+
+            <div class="detail-card-body">
+
+                {% if historial %}
+
+                    <div class="invoice-history">
+
+                        {% for registro in historial %}
+
+                            <div class="history-item">
+
+                                <div class="history-icon">
+
+                                    {% if registro.accion == "Pago" %}
+
+                                        <i class="bi bi-check-circle"></i>
+
+                                    {% elif registro.accion == "Descuento" %}
+
+                                        <i class="bi bi-percent"></i>
+
+                                    {% else %}
+
+                                        <i class="bi bi-plus-circle"></i>
+
+                                    {% endif %}
+
+                                </div>
+
+                                <div class="history-content">
+
+                                    <div class="d-flex flex-wrap justify-content-between gap-2">
+
+                                        <strong>
+                                            {{ registro.accion }}
+                                        </strong>
+
+                                        <small class="text-muted">
+                                            {{ registro.fecha }}
+                                        </small>
+
+                                    </div>
+
+                                    <p class="text-muted mb-0 mt-1">
+                                        {{ registro.detalle }}
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="text-center py-4">
+
+                        <i class="bi bi-clock-history fs-1 text-muted"></i>
+
+                        <p class="text-muted mt-3 mb-0">
+                            Todavía no hay operaciones registradas.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <!-- ==========================================
+         COLUMNA DERECHA: OPERACIONES
+    ========================================== -->
+
+    <div class="col-lg-4">
+
+        <!-- APLICAR DESCUENTO -->
+
+        <section class="detail-card mb-4">
+
+            <div class="detail-card-header">
+
+                <h2 class="fs-5 fw-bold mb-0">
+                    <i class="bi bi-percent text-primary me-2"></i>
+                    Aplicar descuento
+                </h2>
+
+            </div>
+
+            <div class="detail-card-body">
+
+                <p class="text-muted">
+                    Ingresa un porcentaje entre 0 y 100
+                    para descontarlo del monto actual.
+                </p>
+
+                <form
+                    action="{{ url_for(
+                        'aplicar_descuento',
+                        numero=factura.get_numero_factura()
+                    ) }}"
+                    method="POST"
+                    id="formDescuento"
+                >
+
+                    <label
+                        for="porcentaje"
+                        class="form-label fw-semibold"
+                    >
+                        Porcentaje de descuento
+                    </label>
+
+                    <div class="input-group mb-3">
+
+                        <input
+                            type="number"
+                            id="porcentaje"
+                            name="porcentaje"
+                            class="form-control"
+                            placeholder="Ejemplo: 10"
+                            min="0"
+                            max="100"
+                            step="0.01"
+                            required
+                        >
+
+                        <span class="input-group-text">
+                            %
+                        </span>
+
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="btn btn-outline-primary w-100"
+                    >
+                        <i class="bi bi-percent me-2"></i>
+                        Aplicar descuento
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+
+        <!-- REGISTRAR PAGO -->
+
+        <section class="detail-card mb-4">
+
+            <div class="detail-card-header">
+
+                <h2 class="fs-5 fw-bold mb-0">
+                    <i class="bi bi-credit-card text-primary me-2"></i>
+                    Registrar pago
+                </h2>
+
+            </div>
+
+            <div class="detail-card-body">
+
+                {% if factura.get_estado_pago() == "Pagado" %}
+
+                    <div class="alert alert-success mb-0">
+
+                        <i class="bi bi-check-circle me-2"></i>
+
+                        Esta factura ya se encuentra pagada.
+
+                    </div>
+
+                {% else %}
+
+                    <p class="text-muted">
+                        Marca esta factura como pagada cuando
+                        el cliente haya realizado el pago.
+                    </p>
+
+                    <form
+                        action="{{ url_for(
+                            'marcar_pagado',
+                            numero=factura.get_numero_factura()
+                        ) }}"
+                        method="POST"
+                        id="formPagar"
+                    >
+
+                        <button
+                            type="submit"
+                            class="btn btn-success w-100"
+                            {% if factura.get_monto() <= 0 %}disabled{% endif %}
+                        >
+                            <i class="bi bi-check-circle me-2"></i>
+                            Marcar como pagada
+                        </button>
+
+                    </form>
+
+                    {% if factura.get_monto() <= 0 %}
+
+                        <small class="text-muted d-block mt-2">
+                            No se puede registrar un pago
+                            con monto igual a cero.
+                        </small>
+
+                    {% endif %}
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+        <!-- ACCIONES ADICIONALES -->
+
+        <section class="detail-card">
+
+            <div class="detail-card-header">
+
+                <h2 class="fs-5 fw-bold mb-0">
+                    <i class="bi bi-gear text-primary me-2"></i>
+                    Otras acciones
+                </h2>
+
+            </div>
+
+            <div class="detail-card-body">
+
+                <a
+                    href="{{ url_for('facturas') }}"
+                    class="btn btn-outline-secondary w-100 mb-3"
+                >
+                    <i class="bi bi-arrow-left me-2"></i>
+                    Volver al listado
+                </a>
+
+                <button
+                    type="button"
+                    class="btn btn-outline-primary w-100 mb-3"
+                    onclick="window.print()"
+                >
+                    <i class="bi bi-printer me-2"></i>
+                    Imprimir factura
+                </button>
+
+                <form
+                    action="{{ url_for(
+                        'eliminar_factura',
+                        numero=factura.get_numero_factura()
+                    ) }}"
+                    method="POST"
+                    id="formEliminarDetalle"
+                >
+
+                    <button
+                        type="submit"
+                        class="btn btn-outline-danger w-100"
+                    >
+                        <i class="bi bi-trash me-2"></i>
+                        Eliminar factura
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script
+
+src="{{ url_for('static', filename='js/detalle_factura.js') }}">
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <meta
+        name="description"
+        content="Jaguar Corp - Sistema académico de facturación de clientes desarrollado con Python y Flask."
+    >
+
+    <meta name="Alexander" content="Jaguar Corp">
+    <!--
+        block title permite que cada página tenga su propio título.
+        Si una página no lo modifica, utiliza el título predeterminado.
+    -->
+    <title>
+        {% block title %}
+            Jaguar Corp | Sistema de Facturación
+        {% endblock %}
+    </title>
+<!-- ==========================================
+            2. BOOTSTRAP 5
+    ========================================== -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+
+    <!-- ==========================================
+            3. BOOTSTRAP ICONS
+    ========================================== -->
+
+    <!--
+        Bootstrap Icons proporciona los iconos
+        que utilizamos en el menú y otras secciones.
+    -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        rel="stylesheet"
+    >
+
+
+    <!-- ==========================================
+         4. CSS PERSONALIZADO
+    ========================================== -->
+
+    <!--
+        static es la carpeta donde guardamos nuestros estilos.
+    -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+    <!--
+        Este bloque permite agregar estilos adicionales
+        desde otras páginas que utilizan base.html.
+    -->
+    {% block styles %}
+    {% endblock %}
+
+</head>
+
+<body>
+
+    <!-- ==========================================
+    5. MENÚ LATERAL
+    ========================================== -->
+
+    <!--
+        aside representa una sección complementaria.
+        Aquí contiene el menú lateral de navegación.
+
+        aria-label ayuda a identificar el menú
+        para usuarios que utilizan lectores de pantalla.
+    -->
+    <aside
+        class="sidebar"
+        id="sidebar"
+        aria-label="Menú lateral"
+    >
+
+        <!-- IDENTIFICACIÓN DEL SISTEMA -->
+
+        <div class="sidebar-brand">
+
+            <!-- Icono de seguridad -->
+            <div class="brand-icon">
+                <i class="bi bi-shield-check"></i>
+            </div>
+
+            <!-- Nombre de nuestra aplicación -->
+            <h4>
+                JAGUAR CORP
+            </h4>
+
+            <p>
+                Sistema de Facturación
+            </p>
+
+        </div>
+
+        <!-- NAVEGACIÓN PRINCIPAL -->
+
+        <!-- nav agrupa los enlaces de navegación -->
+        <nav
+            class="sidebar-nav"
+            aria-label="Navegación principal"
+        >
+
+            <!-- ENLACE AL DASHBOARD -->
+            <a
+                href="{{ url_for('inicio') }}"
+                class="nav-link {% if request.endpoint == 'inicio' %}active{% endif %}"
+                {% if request.endpoint == 'inicio' %}
+                    aria-current="page"
+                {% endif %}
+            >
+
+                <!-- Icono del dashboard -->
+                <i class="bi bi-grid-1x2"></i>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <!-- ENLACE PARA CREAR FACTURAS -->
+
+            <!--
+                Este enlace abre el formulario
+                donde registramos nuevas facturas.
+            -->
+            <a
+                href="{{ url_for('nueva_factura') }}"
+                class="nav-link {% if request.endpoint == 'nueva_factura' %}active{% endif %}"
+                {% if request.endpoint == 'nueva_factura' %}
+                    aria-current="page"
+                {% endif %}
+            >
+
+                <i class="bi bi-file-earmark-plus"></i>
+
+                <span>
+                    Nueva Factura
+                </span>
+
+            </a>
+
+
+            <!-- ENLACE AL LISTADO DE FACTURAS -->
+
+            <!--
+                Este enlace permite consultar las facturas.
+
+                Se mantiene activo cuando estamos en el listado
+                o revisando el detalle de una factura.
+            -->
+            <a
+                href="{{ url_for('facturas') }}"
+                class="nav-link {% if request.endpoint in ['facturas', 'detalle_factura'] %}active{% endif %}"
+                {% if request.endpoint in ['facturas', 'detalle_factura'] %}
+                    aria-current="page"
+                {% endif %}
+            >
+
+                <i class="bi bi-receipt"></i>
+
+                <span>
+                    Facturas
+                </span>
+
+            </a>
+
+        </nav>
+
+
+        <!-- PIE DEL MENÚ LATERAL -->
+
+        <div class="sidebar-footer">
+
+            <small>
+                Jaguar Corp &copy; 2026
+            </small>
+
+            <small class="d-block mt-1">
+                Proyecto académico
+            </small>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ==========================================
+         6. CONTENEDOR PRINCIPAL
+    ========================================== -->
+
+    <!--
+        Este contenedor agrupa la barra superior,
+        el contenido principal y el pie de página.
+    -->
+    <div class="main-wrapper">
+
+
+        <!-- ==========================================
+             7. BARRA SUPERIOR
+        ========================================== -->
+
+        <!-- header representa la cabecera de la página -->
+        <header class="topbar">
+
+            <!-- BOTÓN PARA ABRIR O CERRAR EL MENÚ -->
+
+            <!--
+                Este botón es utilizado por app.js.
+
+                id="menuToggle" permite identificarlo
+                desde JavaScript.
+
+                aria-expanded indica si el menú
+                está abierto o cerrado.
+            -->
+            <button
+                type="button"
+                class="btn-menu"
+                id="menuToggle"
+                aria-label="Abrir o cerrar menú lateral"
+                aria-controls="sidebar"
+                aria-expanded="false"
+            >
+
+                <i class="bi bi-list"></i>
+
+            </button>
+
+
+            <!-- INFORMACIÓN DEL ADMINISTRADOR -->
+
+            <div class="topbar-user">
+
+                <!--
+                    d-none oculta este texto por defecto.
+                    d-sm-block lo muestra desde pantallas pequeñas.
+
+                    Son clases proporcionadas por Bootstrap.
+                -->
+                <div class="d-none d-sm-block text-end me-2">
+
+                    <strong class="d-block">
+                        Administrador
+                    </strong>
+
+                    <small class="text-muted">
+                        Jaguar Corp
+                    </small>
+
+                </div>
+
+                <!-- Icono del usuario -->
+                <i class="bi bi-person-circle fs-3"></i>
+
+            </div>
+
+        </header>
+
+
+        <!-- ==========================================
+    8. CONTENIDO PRINCIPAL
+        ========================================== -->
+
+        <!--
+            main identifica el contenido principal.
+
+            block content es el espacio donde Flask
+            mostrará el contenido de cada página.
+
+            Por ejemplo:
+            - index.html
+            - nueva_factura.html
+            - facturas.html
+            - detalle_factura.html
+        -->
+        <main
+            class="content"
+            id="contenido-principal"
+        >
+
+            {% block content %}
+            {% endblock %}
+
+        </main>
+
+
+        <!-- ==========================================
+                9. PIE DE PÁGINA
+        ========================================== -->
+
+        <!-- footer representa el pie de página -->
+        <footer class="main-footer">
+
+            <div class="d-flex flex-wrap justify-content-between gap-2">
+
+                <span>
+                    &copy; 2026 Jaguar Corp
+                </span>
+
+                <span>
+                    Desarrollado con Python y Flask
+                </span>
+
+            </div>
+
+        </footer>
+
+    </div>
+
+
+    <!-- ==========================================
+            10. MENSAJES FLASH DE FLASK
+    ========================================== -->
+
+    <!--
+        En app.py utilizamos flash() para preparar
+        mensajes de éxito y error.
+
+        get_flashed_messages() recupera esos mensajes.
+
+        Los guardamos en elementos HTML ocultos
+        para que app.js pueda mostrarlos con SweetAlert2.
+    -->
+
+    <div id="flash-messages" hidden>
+
+        <!-- Recuperamos los mensajes y sus categorías -->
+        {% with mensajes = get_flashed_messages(with_categories=true) %}
+
+            <!-- Recorremos los mensajes disponibles -->
+            {% for categoria, mensaje in mensajes %}
+
+                <!--
+                    Guardamos la categoría y el mensaje
+                    en atributos que JavaScript puede leer.
+                -->
+                <div
+                    class="flash-message"
+                    data-category="{{ categoria }}"
+                    data-message="{{ mensaje }}"
+                ></div>
+
+            {% endfor %}
+
+        {% endwith %}
+
+    </div>
+
+
+    <!-- ==========================================
+            11. BOOTSTRAP JAVASCRIPT
+    ========================================== -->
+
+    <!--
+        Cargamos las funciones JavaScript de Bootstrap
+        para utilizar sus componentes interactivos.
+    -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+
+    <!-- ==========================================
+         12. SWEETALERT2
+    ========================================== -->
+
+    <!--
+        SweetAlert2 permite mostrar ventanas de aviso,
+        confirmaciones y mensajes de error personalizados.
+    -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+    </script>
+
+
+    <!-- ==========================================
+            13. JAVASCRIPT PERSONALIZADO
+    ========================================== -->
+
+    <!--
+        Cargamos nuestro archivo app.js.
+
+        Aquí programamos funciones como:
+        - Abrir y cerrar el menú lateral.
+        - Mostrar mensajes con SweetAlert2.
+        - Controlar algunas interacciones de la página.
+    -->
+    <script
+        src="{{ url_for('static', filename='js/app.js') }}">
+    </script>
+
+
+    <!-- ==========================================
+         14. SCRIPTS DE CADA PÁGINA
+    ========================================== -->
+
+    <!--
+        Este bloque permite que otras páginas
+        agreguen sus propias instrucciones JavaScript.
+
+        Por ejemplo, podemos agregar confirmaciones
+        antes de eliminar una factura.
+    -->
+    {% block scripts %}
+    {% endblock %}
+
+</body>
+
+</html>

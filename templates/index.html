@@ -1,0 +1,346 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dashboard | Jaguar Corp
+{% endblock %}
+
+{% block content %}
+
+<!-- ==========================================
+        ENCABEZADO PRINCIPAL
+========================================== -->
+
+<section class="dashboard-hero mb-4">
+
+    <div class="hero-content">
+
+        <span class="hero-welcome">
+            Bienvenido a
+        </span>
+
+        <h1>
+            JAGUAR CORP
+        </h1>
+
+        <h3>
+            Sistema de Facturación de Clientes
+        </h3>
+
+        <p>
+            Gestiona tus facturas de forma sencilla,
+            rápida y organizada.
+        </p>
+
+        <a
+            href="{{ url_for('nueva_factura') }}"
+            class="btn btn-primary mt-2"
+        >
+            <i class="bi bi-plus-circle me-2"></i>
+            Crear nueva factura
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- ==========================================
+     TÍTULO DE ESTADÍSTICAS
+========================================== -->
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+
+    <div>
+        <h2 class="fw-bold fs-4 mb-1">
+            Resumen de Facturación
+        </h2>
+
+        <p class="text-muted mb-0">
+            Información actualizada de las facturas registradas.
+        </p>
+    </div>
+
+</div>
+
+
+<!-- ==========================================
+     TARJETAS DE ESTADÍSTICAS
+========================================== -->
+
+<section
+    class="row g-4 mb-4"
+    aria-label="Estadísticas de facturación"
+>
+
+    <!-- TOTAL DE FACTURAS -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="stat-card">
+
+            <div class="stat-icon bg-primary">
+                <i class="bi bi-file-earmark-text"></i>
+            </div>
+
+            <div>
+
+                <p>
+                    Facturas totales
+                </p>
+
+                <h2>
+                    {{ estadisticas.total_facturas }}
+                </h2>
+
+                <small class="text-muted">
+                    Facturas registradas
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- MONTO TOTAL FACTURADO -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="stat-card">
+
+            <div class="stat-icon bg-success">
+                <i class="bi bi-currency-dollar"></i>
+            </div>
+
+            <div>
+
+                <p>
+                    Monto total
+                </p>
+
+                <h2>
+                    ${{ "{:,.0f}".format(
+                        estadisticas.monto_total
+                    ).replace(",", ".") }}
+                </h2>
+
+                <small class="text-muted">
+                    Total facturado
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- FACTURAS PENDIENTES -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="stat-card">
+
+            <div class="stat-icon bg-warning">
+                <i class="bi bi-clock-history"></i>
+            </div>
+
+            <div>
+
+                <p>
+                    Facturas pendientes
+                </p>
+
+                <h2>
+                    {{ estadisticas.pendientes }}
+                </h2>
+
+                <small class="text-muted">
+                    Pendientes de pago
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- FACTURAS PAGADAS -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="stat-card">
+
+            <div class="stat-icon bg-purple">
+                <i class="bi bi-check-circle"></i>
+            </div>
+
+            <div>
+
+                <p>
+                    Facturas pagadas
+                </p>
+
+                <h2>
+                    {{ estadisticas.pagadas }}
+                </h2>
+
+                <small class="text-muted">
+                    Pagos registrados
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ==========================================
+     ACCESOS RÁPIDOS
+========================================== -->
+
+<div class="mb-3">
+
+    <h2 class="fw-bold fs-4 mb-1">
+        Accesos Rápidos
+    </h2>
+
+    <p class="text-muted">
+        Selecciona una opción para administrar tus facturas.
+    </p>
+
+</div>
+
+
+<section
+    class="row g-4"
+    aria-label="Accesos rápidos"
+>
+
+    <!-- NUEVA FACTURA -->
+
+    <div class="col-lg-4">
+
+        <a
+            href="{{ url_for('nueva_factura') }}"
+            class="action-card action-blue"
+        >
+
+            <i class="bi bi-file-earmark-plus"></i>
+
+            <div>
+
+                <h4>
+                    Nueva Factura
+                </h4>
+
+                <p>
+                    Registra una nueva factura de cliente.
+                </p>
+
+            </div>
+
+            <i class="bi bi-arrow-right-circle action-arrow"></i>
+
+        </a>
+
+    </div>
+
+
+    <!-- VER FACTURAS -->
+
+    <div class="col-lg-4">
+
+        <a
+            href="{{ url_for('facturas') }}"
+            class="action-card action-green"
+        >
+
+            <i class="bi bi-list-ul"></i>
+
+            <div>
+
+                <h4>
+                    Ver Facturas
+                </h4>
+
+                <p>
+                    Consulta y administra las facturas registradas.
+                </p>
+
+            </div>
+
+            <i class="bi bi-arrow-right-circle action-arrow"></i>
+
+        </a>
+
+    </div>
+
+
+    <!-- ESTADÍSTICAS -->
+
+    <div class="col-lg-4">
+
+        <a
+            href="#"
+            class="action-card action-purple"
+            onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;"
+        >
+
+            <i class="bi bi-bar-chart-line"></i>
+
+            <div>
+
+                <h4>
+                    Estadísticas
+                </h4>
+
+                <p>
+                    Consulta los resultados de facturación.
+                </p>
+
+            </div>
+
+            <i class="bi bi-arrow-right-circle action-arrow"></i>
+
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- ==========================================
+     INFORMACIÓN DEL PROTOTIPO
+========================================== -->
+
+<div class="alert alert-info border-0 mt-4">
+
+    <div class="d-flex align-items-start gap-3">
+
+        <i class="bi bi-info-circle fs-4"></i>
+
+        <div>
+
+            <strong>
+                Prototipo académico Jaguar Corp
+            </strong>
+
+            <p class="mb-0 mt-1">
+                Este sistema utiliza Python y Flask.
+                Las facturas se almacenan temporalmente
+                durante la ejecución del servidor.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
